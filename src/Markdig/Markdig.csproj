@@ -1,6 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PackageId>Markdig</PackageId>
+    <PackageId>Markdig.Ssml</PackageId>
+    <version>0.0.1.0</version>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <MinVerSkip>true</MinVerSkip>
+    <MinVerMajor>0</MinVerMajor>
+    <MinVerMinor>0</MinVerMinor>
   </PropertyGroup>
   <Import Project="Markdig.targets" />
   <ItemGroup>

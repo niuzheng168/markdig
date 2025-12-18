@@ -98,6 +98,19 @@ public static class MarkdownExtensions
     }
 
     /// <summary>
+    /// Uses all extensions except the BootStrap, Emoji, SmartyPants and soft line as hard line breaks extensions.
+    /// </summary>
+    /// <param name="pipeline">The pipeline.</param>
+    /// <returns>The modified pipeline</returns>
+    public static MarkdownPipelineBuilder UseSsmlExtensions(this MarkdownPipelineBuilder pipeline)
+    {
+        pipeline.UseAdvancedExtensions();
+        pipeline.Extensions.TryRemove<FootnoteExtension>();
+        pipeline.Use<FootnoteSsmlExtension>();
+        return pipeline;
+    }
+
+    /// <summary>
     /// Uses this extension to enable alert blocks.
     /// </summary>
     /// <param name="pipeline">The pipeline.</param>
@@ -108,7 +121,7 @@ public static class MarkdownExtensions
         pipeline.Extensions.ReplaceOrAdd<AlertExtension>(new AlertExtension() { RenderKind = renderKind });
         return pipeline;
     }
-    
+
     /// <summary>
     /// Uses this extension to enable autolinks from text `http://`, `https://`, `ftp://`, `mailto:`, `www.xxx.yyy`
     /// </summary>

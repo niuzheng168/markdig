@@ -10,14 +10,14 @@ namespace Markdig.Extensions.Footnotes;
 /// Extension to allow footnotes.
 /// </summary>
 /// <seealso cref="IMarkdownExtension" />
-public class FootnoteExtension : IMarkdownExtension
+public class FootnoteSsmlExtension : IMarkdownExtension
 {
     public void Setup(MarkdownPipelineBuilder pipeline)
     {
         if (!pipeline.BlockParsers.Contains<FootnoteParser>())
         {
             // Insert the parser before any other parsers
-            pipeline.BlockParsers.Insert(0, new FootnoteParser());
+            pipeline.BlockParsers.Insert(0, new FootnoteParser(false));
         }
     }
 

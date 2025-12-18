@@ -1,5 +1,5 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using Markdig.Syntax;
@@ -14,6 +14,7 @@ public class ListRenderer : HtmlObjectRenderer<ListBlock>
 {
     protected override void Write(HtmlRenderer renderer, ListBlock listBlock)
     {
+        bool explicitOrdinalInOrderedList = renderer is SsmlRender ssmlRenderer && ssmlRenderer.ExplicitOrdinalInOrderedList;
         renderer.EnsureLine();
         if (renderer.EnableHtmlForBlock)
         {
@@ -44,6 +45,15 @@ public class ListRenderer : HtmlObjectRenderer<ListBlock>
             }
         }
 
+        int index = 1;
+        if (listBlock.OrderedStart is not null && listBlock.OrderedStart != "1")
+        {
+            if (int.TryParse(listBlock.OrderedStart, out var start))
+            {
+                index = start;
+            }
+        }
+
         foreach (var item in listBlock)
         {
             var listItem = (ListItemBlock)item;
@@ -58,6 +68,11 @@ public class ListRenderer : HtmlObjectRenderer<ListBlock>
                 renderer.WriteRaw('>');
             }
 
+            if (listBlock.IsOrdered && explicitOrdinalInOrderedList)
+            {
+                renderer.Write($"{index}. ");
+                index++;
+            }
             renderer.WriteChildren(listItem);
 
             if (renderer.EnableHtmlForBlock)

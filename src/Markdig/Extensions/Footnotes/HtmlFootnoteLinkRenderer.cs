@@ -1,5 +1,5 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using Markdig.Renderers;
@@ -28,8 +28,11 @@ public class HtmlFootnoteLinkRenderer : HtmlObjectRenderer<FootnoteLink>
     protected override void Write(HtmlRenderer renderer, FootnoteLink link)
     {
         var order = link.Footnote.Order;
-        renderer.Write(link.IsBackLink
-            ? $"<a href=\"#fnref:{link.Index}\" class=\"{FootnoteBackLinkClass}\">{BackLinkString}</a>"
-            : $"<a id=\"fnref:{link.Index}\" href=\"#fn:{order}\" class=\"{FootnoteLinkClass}\"><sup>{order}</sup></a>");
+        if (renderer.EnableHtmlForBlock)
+        {
+            renderer.Write(link.IsBackLink
+                ? $"<a href=\"#fnref:{link.Index}\" class=\"{FootnoteBackLinkClass}\">{BackLinkString}</a>"
+                : $"<a id=\"fnref:{link.Index}\" href=\"#fn:{order}\" class=\"{FootnoteLinkClass}\"><sup>{order}</sup></a>");
+        }
     }
 }

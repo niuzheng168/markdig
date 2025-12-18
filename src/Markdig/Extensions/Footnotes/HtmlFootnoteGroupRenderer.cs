@@ -1,5 +1,5 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using Markdig.Renderers;
@@ -29,18 +29,31 @@ public class HtmlFootnoteGroupRenderer : HtmlObjectRenderer<FootnoteGroup>
     protected override void Write(HtmlRenderer renderer, FootnoteGroup footnotes)
     {
         renderer.EnsureLine();
-        renderer.WriteLine($"<div class=\"{GroupClass}\">");
-        renderer.WriteLine("<hr />");
-        renderer.WriteLine("<ol>");
+        if (renderer.EnableHtmlForBlock)
+        {
+            renderer.WriteLine($"<div class=\"{GroupClass}\">");
+            renderer.WriteLine("<hr />");
+            renderer.WriteLine("<ol>");
+        }
 
         for (int i = 0; i < footnotes.Count; i++)
         {
             var footnote = (Footnote)footnotes[i];
-            renderer.WriteLine($"<li id=\"fn:{footnote.Order}\">");
+            if (renderer.EnableHtmlForBlock)
+            {
+                renderer.WriteLine($"<li id=\"fn:{footnote.Order}\">");
+            }
             renderer.WriteChildren(footnote);
+            if (renderer.EnableHtmlForBlock)
+            {
             renderer.WriteLine("</li>");
+            }
         }
-        renderer.WriteLine("</ol>");
-        renderer.WriteLine("</div>");
+
+        if (renderer.EnableHtmlForBlock)
+        {
+            renderer.WriteLine("</ol>");
+            renderer.WriteLine("</div>");
+        }
     }
 }

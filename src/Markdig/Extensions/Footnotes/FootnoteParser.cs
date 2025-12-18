@@ -1,5 +1,5 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using Markdig.Helpers;
@@ -20,9 +20,16 @@ public class FootnoteParser : BlockParser
     /// </summary>
     private static readonly object DocumentKey = typeof(Footnote);
 
+    public bool RemoveUnusedFootnotes { get; set; } = true;
+
     public FootnoteParser()
     {
         OpeningCharacters = ['['];
+    }
+
+    public FootnoteParser(bool removeUnusedFootnotes) : this()
+    {
+        this.RemoveUnusedFootnotes = removeUnusedFootnotes;
     }
 
     public override BlockState TryOpen(BlockProcessor processor)
@@ -155,12 +162,15 @@ public class FootnoteParser : BlockParser
         for (int i = 0; i < footnotes.Count; i++)
         {
             var footnote = (Footnote)footnotes[i];
-            if (footnote.Order < 0)
+            if (this.RemoveUnusedFootnotes)
             {
-                // Remove this footnote if it doesn't have any links
-                footnotes.RemoveAt(i);
-                i--;
-                continue;
+                if (footnote.Order < 0)
+                {
+                    // Remove this footnote if it doesn't have any links
+                    footnotes.RemoveAt(i);
+                    i--;
+                    continue;
+                }
             }
 
             // Insert all footnote backlinks

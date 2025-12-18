@@ -1,11 +1,12 @@
 // Copyright (c) Alexandre Mutel. All rights reserved.
-// This file is licensed under the BSD-Clause 2 license. 
+// This file is licensed under the BSD-Clause 2 license.
 // See the license.txt file in the project root for more information.
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-
+using Markdig.Extensions.Mathematics;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -271,5 +272,32 @@ public static class Markdown
         var writer = new StringWriter();
         ToPlainText(markdown, writer, pipeline, context);
         return writer.ToString();
+    }
+
+    public static string ToSsml(string markdown, MarkdownPipeline? pipeline = null, MarkdownParserContext? context = null)
+    {
+        if (markdown is null) ThrowHelper.ArgumentNullException_markdown();
+
+        pipeline = GetPipeline(pipeline, markdown);
+
+        var document = MarkdownParser.Parse(markdown, pipeline, context);
+        bool hasMath = document.Descendants().Any(x => x is MathInline || x is MathBlock);
+
+        using var writer = new StringWriter();
+        if (hasMath)
+        {
+            writer.Write("<mstts:prompt domain=\"Math\" />");
+        }
+
+        var render = new SsmlRender(writer)
+        {
+            EnableHtmlForBlock = false,
+            EnableHtmlForInline = false,
+            EnableHtmlEscape = false,
+        };
+        pipeline.Setup(render);
+        render.Render(document);
+        writer.Flush();
+        return writer.ToString() ?? string.Empty;
     }
 }
